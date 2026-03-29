@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
+import { put } from "@vercel/blob"
 import {
   Truck,
   Camera,
@@ -75,12 +76,25 @@ export function MachineForm({ machine }: MachineFormProps) {
   const minSalePrice = totalCost + profit40
   const salePriceNum = parseFloat(salePrice) || 0
 
-  function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => setPhoto(reader.result as string)
-    reader.readAsDataURL(file)
+
+    try {
+      toast.loading("Subiendo foto...")
+      // Upload to Vercel Blob
+      const blob = await put(`machines/${Date.now()}-${file.name}`, file, {
+        access: "public",
+      })
+      console.log("[v0] Blob uploaded:", blob.url)
+      setPhoto(blob.url)
+      toast.dismiss()
+      toast.success("Foto subida correctamente")
+    } catch (error) {
+      console.error("[v0] Error uploading blob:", error)
+      toast.dismiss()
+      toast.error("Error al subir la foto")
+    }
   }
 
   async function handleAddExpense() {
