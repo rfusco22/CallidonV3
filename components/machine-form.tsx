@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { put } from "@vercel/blob"
 import {
   Truck,
   Camera,
@@ -82,16 +81,27 @@ export function MachineForm({ machine }: MachineFormProps) {
 
     try {
       toast.loading("Subiendo foto...")
-      // Upload to Vercel Blob
-      const blob = await put(`machines/${Date.now()}-${file.name}`, file, {
-        access: "public",
+      
+      // Create FormData and upload via API route
+      const formData = new FormData()
+      formData.append("file", file)
+      
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
       })
-      console.log("[v0] Blob uploaded:", blob.url)
-      setPhoto(blob.url)
+
+      if (!response.ok) {
+        throw new Error("Upload failed")
+      }
+
+      const data = await response.json()
+      console.log("[v0] Photo uploaded to Blob:", data.url)
+      setPhoto(data.url)
       toast.dismiss()
       toast.success("Foto subida correctamente")
     } catch (error) {
-      console.error("[v0] Error uploading blob:", error)
+      console.error("[v0] Error uploading photo:", error)
       toast.dismiss()
       toast.error("Error al subir la foto")
     }
