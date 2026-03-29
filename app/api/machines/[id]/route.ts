@@ -56,7 +56,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const now = new Date().toISOString()
 
     await query(
-      `UPDATE machines SET item = ?, purchase_date = ?, purchased_by = ?, item_number = ?, serial = ?, hours = ?, cost = ?, transport = ?, location = ?, observations = ?, sale_status = ?, sale_price = ?, updated_at = ? WHERE id = ?`,
+      `UPDATE machines SET item = ?, purchase_date = ?, purchased_by = ?, item_number = ?, serial = ?, hours = ?, cost = ?, transport = ?, location = ?, observations = ?, sale_status = ?, sale_price = ?, photo = ?, updated_at = ? WHERE id = ?`,
       [
         data.item,
         data.purchaseDate,
@@ -70,6 +70,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         data.observations || "",
         data.saleStatus || "no_vendido",
         data.salePrice || 0,
+        data.photo || null,
         now,
         id,
       ]
