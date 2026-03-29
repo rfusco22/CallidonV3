@@ -32,12 +32,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-function formatCurrency(value: number) {
+function formatCurrency(value: number | undefined | null) {
+  // Handle undefined, null, or NaN values
+  const num = typeof value === 'number' && !isNaN(value) ? value : 0
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
-  }).format(value)
+  }).format(num)
 }
 
 const statusMap = {

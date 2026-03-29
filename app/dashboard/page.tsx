@@ -25,13 +25,15 @@ import {
   Cell,
 } from "recharts"
 
-function formatCurrency(value: number) {
+function formatCurrency(value: number | undefined | null) {
+  // Handle undefined, null, or NaN values
+  const num = typeof value === 'number' && !isNaN(value) ? value : 0
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(value)
+  }).format(num)
 }
 
 const STATUS_COLORS = ["oklch(0.75 0.16 55)", "oklch(0.55 0.08 55)", "oklch(0.4 0 0)"]

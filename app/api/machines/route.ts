@@ -27,25 +27,38 @@ export async function GET() {
       })
     }
 
-    const machinesWithExpenses = (machines as any[]).map((row) => ({
-      id: row.id as string,
-      item: row.item as string,
-      purchaseDate: row.purchase_date as string,
-      purchasedBy: row.purchased_by as string,
-      itemNumber: row.item_number as string,
-      serial: row.serial as string,
-      hours: row.hours as string,
-      cost: row.cost as number,
-      transport: row.transport as number,
-      location: row.location as string,
-      observations: row.observations as string,
-      saleStatus: row.sale_status as "no_vendido" | "vendido" | "en_negociacion",
-      photo: row.photo as string | null,
-      salePrice: row.sale_price as number,
-      createdAt: row.created_at as string,
-      updatedAt: row.updated_at as string,
-      expenses: expensesByMachine[row.id as string] || [],
-    }))
+    const machinesWithExpenses = (machines as any[]).map((row) => {
+      // Safely convert numeric values, defaulting to 0 if invalid
+      const parseCost = (val: any): number => {
+        const num = Number(val)
+        return !isNaN(num) && num !== null && val !== undefined ? num : 0
+      }
+
+      return {
+        id: row.id as string,
+        item: row.item as string,
+        purchaseDate: row.purchase_date as string,
+        purchasedBy: row.purchased_by as string,
+        itemNumber: row.item_number as string,
+        serial: row.serial as string,
+        hours: row.hours as string,
+        cost: parseCost(row.cost),
+        transport: parseCost(row.transport),
+        location: row.location as string,
+        observations: row.observations as string,
+        saleStatus: row.sale_status as "no_vendido" | "vendido" | "en_negociacion",
+        photo: row.photo as string | null,
+        salePrice: parseCost(row.sale_price),
+        createdAt: row.created_at as string,
+        updatedAt: row.updated_at as string,
+        expenses: (expensesByMachine[row.id as string] || []).map(exp => ({
+          id: exp.id,
+          date: exp.date,
+          description: exp.description,
+          amount: parseCost(exp.amount),
+        })),
+      }
+    })
 
     return NextResponse.json(machinesWithExpenses)
   } catch (error) {

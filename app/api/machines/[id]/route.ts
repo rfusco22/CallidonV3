@@ -13,6 +13,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const machine = (machines as any[])[0]
     const expenses = await query("SELECT * FROM expenses WHERE machine_id = ? ORDER BY date ASC", [id])
 
+    // Safely convert numeric values
+    const parseCost = (val: any): number => {
+      const num = Number(val)
+      return !isNaN(num) && num !== null && val !== undefined ? num : 0
+    }
+
     return NextResponse.json({
       id: machine.id,
       item: machine.item,
@@ -21,20 +27,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       itemNumber: machine.item_number,
       serial: machine.serial,
       hours: machine.hours,
-      cost: machine.cost,
-      transport: machine.transport,
+      cost: parseCost(machine.cost),
+      transport: parseCost(machine.transport),
       location: machine.location,
       observations: machine.observations,
       saleStatus: machine.sale_status,
       photo: machine.photo,
-      salePrice: machine.sale_price,
+      salePrice: parseCost(machine.sale_price),
       createdAt: machine.created_at,
       updatedAt: machine.updated_at,
       expenses: (expenses as any[]).map((e) => ({
         id: e.id,
         date: e.date,
         description: e.description,
-        amount: e.amount,
+        amount: parseCost(e.amount),
       })),
     })
   } catch (error) {

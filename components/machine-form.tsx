@@ -23,12 +23,14 @@ import {
 import type { Machine, Expense } from "@/lib/store"
 import { toast } from "sonner"
 
-function formatCurrency(value: number) {
+function formatCurrency(value: number | undefined | null) {
+  // Handle undefined, null, or NaN values
+  const num = typeof value === 'number' && !isNaN(value) ? value : 0
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
-  }).format(value)
+  }).format(num)
 }
 
 interface MachineFormProps {
