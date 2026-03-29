@@ -140,7 +140,8 @@ export default function InventarioPage() {
             >
               {/* Photo area */}
               <div className="relative flex h-40 items-center justify-center bg-muted/50">
-                {machine.photo ? (
+                {console.log("[v0] Machine:", machine.id, "Photo value:", machine.photo, "Photo type:", typeof machine.photo)}
+                {machine.photo && machine.photo.length > 0 ? (
                   <img
                     src={machine.photo}
                     alt={machine.item}
