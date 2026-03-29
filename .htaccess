@@ -1,0 +1,31 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/prealcac/public_html/callidon_app"
+PassengerBaseURI "/"
+PassengerNodejs "/home/prealcac/nodevenv/public_html/callidon_app/20/bin/node"
+PassengerAppType node
+PassengerStartupFile app.cjs
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# 1. Forzar que el inicio sea nuestro archivo CJS
+DirectoryIndex app.cjs
+Options -Indexes
+
+# 2. Configuraci¨®n de Passenger para CommonJS
+PassengerEnabled On
+PassengerAppEnv production
+PassengerAppRoot /home/prealcac/public_html/callidon_app
+PassengerNodejs /home/prealcac/nodevenv/public_html/callidon_app/20/bin/node
+PassengerStartupFile app.cjs
+
+# 3. Permisos expl¨ªcitos para evitar el 403
+<Files "app.cjs">
+    Order allow,deny
+    Allow from all
+    Require all granted
+    SetHandler none
+</Files>
+
+# 4. Variables de Entorno
+SetEnv MYSQL_DATABASE prealcac_callidon
+SetEnv MYSQL_HOST 127.0.0.1
+SetEnv MYSQL_PASSWORD 19Ric19car2.
+SetEnv MYSQL_USER prealcac_callidon

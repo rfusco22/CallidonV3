@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import { AppShell } from '@/components/app-shell'
 import './globals.css'
 
@@ -35,7 +34,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="es">
       <body className="font-sans antialiased">
         <AppShell>{children}</AppShell>
-        <Analytics />
       </body>
     </html>
   )
